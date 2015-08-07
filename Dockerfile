@@ -95,7 +95,7 @@ RUN tar -cf rootfs.tar * && \
 
 # Then the Apache ace image, copy the configuration file of Ace in Buildroot and create a small base of the future image with buildroot and decompress it
 
-cp -f /usr/buildroot-configure-ace/.config /usr/buildroot-2015.05/ && \
+RUN cp -f /usr/buildroot-configure-ace/.config /usr/buildroot-2015.05/ && \
 
 WORkDIR /usr/buildroot-2015.05
 
