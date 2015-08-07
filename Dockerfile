@@ -131,6 +131,7 @@ RUN cp -fr /usr/openjdk8/build/linux-x86_64-normal-zero-release/images/j2re-comp
 
 RUN rm -r /usr/apache-ace-2.0.1-bin && \
 	cp -r /usr/felix-framework-5.0.1 /usr/buildroot-2015.05/output/images/usr/ && \
+	cd /usr/buildroot-2015.05/output/images && \
 	tar -cf rootfs.tar * && \
 	mkdir /usr/felix-image && \
 	cp rootfs.tar /usr/felix-image
