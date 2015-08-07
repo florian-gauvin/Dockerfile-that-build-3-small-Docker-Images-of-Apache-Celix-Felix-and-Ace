@@ -39,7 +39,7 @@ RUN apt-get update && apt-get install -y \
 
 RUN wget -qO- https://get.docker.com/ | sh
 
-#Prepare the usr directory by downloading in it : Buildroot, the configuration files of Buildroot, Apache Celix, Apache Felix and Apache Ace
+#Prepare the usr directory by downloading in it : Buildroot, the configuration files of Buildroot, Apache Celix, Apache Felix, Apache Ace and Openjdk8
 
 WORKDIR /usr
 
@@ -53,7 +53,8 @@ RUN wget http://git.buildroot.net/buildroot/snapshot/buildroot-2015.05.tar.gz &&
 	wget http://www.eu.apache.org/dist/felix/org.apache.felix.main.distribution-5.0.1.tar.gz  && \
 	tar -xf org.apache.felix.main.distribution-5.0.1.tar.gz && \
 	wget http://www.eu.apache.org/dist/ace/apache-ace-2.0.1/apache-ace-2.0.1-bin.zip && \
-	unzip apache-ace-2.0.1-bin.zip 
+	unzip apache-ace-2.0.1-bin.zip && \
+	hg clone http://hg.openjdk.java.net/jdk8u/jdk8u openjdk8
 
 #Let's begin with Apache Celix
 
