@@ -7,7 +7,7 @@ This will create a builder image of the three images.
 Then Run the following command : 
 docker run -ti --privileged -v /var/run/docker.sock:/var/run/docker.sock name-of-the-docker-image-builder
 This will launch the builder image of the three images and create automatically the small images.
-The image with Celix is about 16MB, the one with openjdk8 and Felix is about 140MB and the one with Openjdk8 and
+The image with Celix is about 16MB, the one with openjdk8 and Felix is about 110MB and the one with Openjdk8 and
 Ace is about 110MB.
 
 Finally you will have the three docker images on the host, you can check by running the following command : 
