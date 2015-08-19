@@ -39,7 +39,7 @@ RUN apt-get update && apt-get install -y \
 
 RUN wget -qO- https://get.docker.com/ | sh
 
-#Prepare the usr directory by downloading in it : Buildroot, the configuration files of Buildroot, Apache Celix, Apache Felix, Apache Ace and Openjdk8
+#Prepare the usr directory by downloading in it : Buildroot, the configuration files of Buildroot, Apache Celix, Apache Felix and Apache Ace
 
 WORKDIR /usr
 
@@ -53,8 +53,7 @@ RUN wget http://git.buildroot.net/buildroot/snapshot/buildroot-2015.05.tar.gz &&
 	wget http://www.eu.apache.org/dist/felix/org.apache.felix.main.distribution-5.0.1.tar.gz  && \
 	tar -xf org.apache.felix.main.distribution-5.0.1.tar.gz && \
 	wget http://www.eu.apache.org/dist/ace/apache-ace-2.0.1/apache-ace-2.0.1-bin.zip && \
-	unzip apache-ace-2.0.1-bin.zip && \
-	hg clone http://hg.openjdk.java.net/jdk8u/jdk8u openjdk8
+	unzip apache-ace-2.0.1-bin.zip 
 
 #Let's begin with Apache Celix
 
@@ -70,6 +69,15 @@ WORKDIR /usr/buildroot-2015.05/output/images
 
 RUN tar -xf rootfs.tar &&\
 	rm rootfs.tar
+
+#Install etcd
+
+RUN cd /tmp && curl -k -L https://github.com/coreos/etcd/releases/download/v2.0.12/etcd-v2.0.12-linux-amd64.tar.gz | tar xzf - && \
+cp etcd-v2.0.12-linux-amd64/etcd /usr/buildroot-2015.05/output/images/bin/ && cp etcd-v2.0.12-linux-amd64/etcdctl /usr/buildroot-2015.05/output/images/bin/
+
+#Add the resources
+
+ADD resources-celix /usr/buildroot-2015.05/output/images/tmp/
 
 #Build Celix and link against the libraries in the buildroot environment. It's not a real good way to do so but it's the only one that I have found : I remove the link.txt file and replace it by a one created manualy and not during the configuration, otherwise I don't have all the libraries linked against the environment in buildroot
 
@@ -96,7 +104,7 @@ RUN tar -cf rootfs.tar * && \
 
 # Then the Apache ace image, copy the configuration file of Ace in Buildroot and create a small base of the future image with buildroot and decompress it
 
-RUN cp -f /usr/buildroot-configure-ace/.config /usr/buildroot-2015.05/
+cp -f /usr/buildroot-configure-ace/.config /usr/buildroot-2015.05/ && \
 
 WORkDIR /usr/buildroot-2015.05
 
@@ -106,6 +114,16 @@ WORKDIR /usr/buildroot-2015.05/output/images
 
 RUN tar -xf rootfs.tar &&\
 	rm rootfs.tar
+
+# Install etcdctl
+
+RUN cd /tmp \
+	&& export ETCDVERSION=v2.0.13 \
+	&& curl -k -L https://github.com/coreos/etcd/releases/download/$ETCDVERSION/etcd-$ETCDVERSION-linux-amd64.tar.gz | gunzip | tar xf - \
+	&& cp etcd-$ETCDVERSION-linux-amd64/etcdctl /usr/buildroot-2015.05/output/images/bin/
+
+#Add the resources
+ADD resources /usr/buildroot-2015.05/output/images/tmp
 
 #Compile the 3 compact profiles of Openjdk8, for more information about the compact profiles of openjdk8 see this link : http://openjdk.java.net/jeps/161
 
@@ -127,11 +145,21 @@ RUN cp -fr /usr/openjdk8/build/linux-x86_64-normal-zero-release/images/j2re-comp
 	cp rootfs.tar /usr/ace-image && \
 	rm rootfs.tar
 
-#Finnally for Apache Felix, just replace the Apache Ace file by the Apache Felix one in the Buildroot environment because the buildroot configuration is the same, create the tar file and store it	
+#Finnally for Apache Felix, INstall etcd and add the resources and then just replace the Apache Ace file by the Apache Felix one in the Buildroot environment because the buildroot configuration is the same, create the tar file and store it
+
+#Install etcd
+
+RUN cd /tmp \
+	&& export ETCDVERSION=v2.0.13 \
+	&& curl -k -L https://github.com/coreos/etcd/releases/download/$ETCDVERSION/etcd-$ETCDVERSION-linux-amd64.tar.gz | gunzip | tar xf - \
+	&& cp etcd-$ETCDVERSION-linux-amd64/etcdctl /usr/rootfs.tar-felix/bin/
+
+#Add the resources
+
+ADD resources /usr/rootfs.tar-felix/tmp	
 
 RUN rm -r /usr/apache-ace-2.0.1-bin && \
 	cp -r /usr/felix-framework-5.0.1 /usr/buildroot-2015.05/output/images/usr/ && \
-	cd /usr/buildroot-2015.05/output/images && \
 	tar -cf rootfs.tar * && \
 	mkdir /usr/felix-image && \
 	cp rootfs.tar /usr/felix-image

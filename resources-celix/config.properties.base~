@@ -1,0 +1,1 @@
+cosgi.auto.start.1= /usr/share/celix/bundles/deployment_admin.zip /usr/share/celix/bundles/log_service.zip /usr/share/celix/bundles/log_writer.zip
