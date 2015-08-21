@@ -163,7 +163,7 @@ WORKDIR /usr/buildroot-2015.05/output/images/
 
 RUN rm -r usr/apache-ace-2.0.1-bin && \
 	rm -r usr/j2re-compact2-image && \
-	cp -r /usr/openjdk8/build/linux-x86_64-normal-zero-release/images/j2re-image && \
+	cp -r /usr/openjdk8/build/linux-x86_64-normal-zero-release/images/j2re-image /usr/buildroot-2015.05/output/images/usr/ && \
 	cp -r /usr/felix-framework-5.0.1 /usr/buildroot-2015.05/output/images/usr/ && \
 	tar -cf rootfs.tar * && \
 	mkdir /usr/felix-image && \
