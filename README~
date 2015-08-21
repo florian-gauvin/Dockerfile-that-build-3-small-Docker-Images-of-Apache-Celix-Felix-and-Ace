@@ -1,0 +1,18 @@
+Here you can find a Dockerfile that can create 3 small docker images, one with Apache Celix, one with Openjdk8 and Apache Felix and one with Openjdk8 and Apache Ace.
+To use this dockerfile :
+First, build the dockerfile by running the following command : docker build -t "name-of-the-docker-image-builder" .
+This will create a builder image of the three images.
+
+Then Run the following command : docker run -ti --privileged -v /var/run/docker.sock:/var/run/docker.sock name-of-the-docker-image-builder
+This will launch the builder image of the three images and create automatically the small images. The image with Celix is about 16MB, the one with openjdk8 and Felix is about 140MB and the one with Openjdk8 and Ace is about 110MB.
+
+Finally you will have the three docker images on the host, you can check by running the following command : "docker images".
+
+BE CAREFUL : 
+	-You need to have the same docker version than there is in the image, in the image I'm using the latest version of docker by running the following command : wget -qO- https://get.docker.com/ | sh
+	-For the two images with Openjdk8, in this dockerfile I'm building the 3 compact profiles of openjdk8 but I'm using only the compact profiles 2. You can change of compact profile by replacing "j2re-compact2-image" by "j2re-compact1-image" or "j2re-compact3-image" in the Dockerfile. For more information about the compact profiles, see this link : http://openjdk.java.net/jeps/161
+
+If you want more information about the dockerfile, see the comments in the Dockerfile.
+
+
+
